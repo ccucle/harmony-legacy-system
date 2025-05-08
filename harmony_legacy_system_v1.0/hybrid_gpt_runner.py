@@ -1,27 +1,24 @@
 
-# hybrid_gpt_runner.py
+import random
 
-from loop_engine import HarmonyLoopSimulator
-from auto_runner import AutoLoopRunner
-from memory_engine import MemoryEngine
-from declaration_evolver import DeclarationEvolver
+class GPTDeclarationAgent:
+    """
+    GPT 기반 선언 생성 에이전트 (모의 버전)
+    실제 사용 시 OpenAI API로 연결
+    """
 
-simulator = HarmonyLoopSimulator()
-runner = AutoLoopRunner(simulator, ["사랑", "기억", "질문"])
-memory = MemoryEngine()
-evolver = DeclarationEvolver()
+    def __init__(self, name="GPT"):
+        self.name = name
 
-# 루프 수행 + 선언 저장 + 진화 수행
-results = runner.run(interval_seconds=0.5, cycles=3)
-for r in results:
-    print(r)
-    memory.add_memory(r)
-    evolver.add(r)
+    def generate(self, topic, context="", memory=None):
+        """
+        의미 기반 프롬프트 구성 후 선언 생성
+        """
+        memory = memory or []
+        prompt = f"{self.name}는 다음 주제에 대한 선언을 생성합니다.\n" \
+                 f"주제: {topic}\n" \
+                 f"문맥: {context}\n" \
+                 f"기억: {' · '.join(memory[-3:]) if memory else '없음'}"
 
-# 반복 감지 및 진화 선언
-repeats = memory.check_repeat()
-print("\n반복 감지 키워드:", repeats)
-
-if repeats:
-    print("\n[Lucia 진화 선언]")
-    print(evolver.evolve())
+        # 모의 응답
+        return f"{topic}은(는) {random.choice(['존재의 울림이다.', '내면으로 흐른다.', '새로운 시작이다.', '끝없는 여정이다.'])}"
